@@ -14,11 +14,18 @@
             "": "class/"
         },
         "files": [
-            "system/helper/script/path.php"
+            "system/helper/constant/request_is.php",
+            "system/helper/function/capsule.php",
+            "system/helper/function/redirect.php",
+            "system/helper/function/url.php",
+            "system/helper/script/env.php",
+            "system/helper/script/path.php",
+            "system/helper/script/view.php"
         ]
     },
     "require": {
         "phpmx/core": "dev-main",
+        "phpmx/server": "dev-main",
         "phpmx/view": "dev-main"
     }
 }

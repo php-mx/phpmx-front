@@ -1,6 +1,8 @@
 /mx
 /.conf
 /composer.lock
+/index.php
+/.htaccess
 
 # MX CORE
 
