@@ -1,1 +1,24 @@
-{}
+{
+    "name": "phpmx/front",
+    "description": "Motor de aplicações monoliticas com phpMx",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "André Ricardo",
+            "email": "contatoadmx@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "": "class/"
+        },
+        "files": [
+            "system/helper/script/path.php"
+        ]
+    },
+    "require": {
+        "phpmx/core": "dev-main",
+        "phpmx/view": "dev-main"
+    }
+}
