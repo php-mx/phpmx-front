@@ -1,6 +1,6 @@
 {
     "name": "phpmx/front",
-    "description": "Motor de aplicações monoliticas com phpMx",
+    "description": "Motor de aplicações monolíticas com PHPMX",
     "license": "MIT",
     "authors": [
         {
