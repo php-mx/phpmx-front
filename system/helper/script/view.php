@@ -3,7 +3,7 @@
 use PhpMx\Front\Icon;
 use PhpMx\View;
 
-View::$RENDER_CLASS['vue'] = \PhpMx\View\RenderVue::class;
+View::$RENDER_CLASS['vue'] = [\PhpMx\View\RenderVue::class, false];
 
 View::globalPrepare('URL', fn(...$params) => url(...$params));
 
