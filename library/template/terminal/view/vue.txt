@@ -1,0 +1,19 @@
+<template>
+  <div>
+    <!-- code here -->
+  </div>
+</template>
+
+<script>
+const { ref, reactive } = Vue;
+
+export default {
+  setup() {
+    return {};
+  },
+};
+</script>
+
+<style>
+/* style here */
+</style>
