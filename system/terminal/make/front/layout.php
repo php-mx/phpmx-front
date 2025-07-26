@@ -14,7 +14,7 @@ return new class extends Terminal {
         if (File::check($file))
             return self::echo("[ignored] file [$file] already exists");
 
-        $content = Path::seekForFile('lybrarlibrary/template/terminal/front/layout.txt');
+        $content = Path::seekForFile('library/template/terminal/front/layout.txt');
         $content = Import::content($content);
         File::create($file, $content);
         self::echo("[created] layout [$layout] created");
