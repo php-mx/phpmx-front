@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = () => location.reload();
+    document.body.insertAdjacentHTML("beforeend", "<div id='ALERT'></div>");
+    document.body.insertAdjacentHTML("beforeend", "<div id='ASIDE'></div>");
     document.body.querySelectorAll("script:not([static])").forEach((tag) => tag.setAttribute("static", ""));
     mx.core.run();
     mx.alert(currentAlert);
@@ -116,7 +118,7 @@ mx.update = {
         });
 
         element.innerHTML = content;
-        element.dataset.state = state;
+        document.body.dataset.state = state;
         mx.core.run();
     },
     location(url) {
@@ -132,9 +134,9 @@ mx.update = {
 mx.go = (url, force = false) => {
     if (!force && url == window.location) return;
     if (new URL(url).hostname != new URL(window.location).hostname) return mx.redirect(url);
-    let state = document.getElementById("LAYOUT").dataset.state;
+    let state = document.body.dataset.state;
     mx.core
-        .request(url, "get", {}, { "Layout-State": state })
+        .request(url, "get", {}, { "State": state })
         .then((resp) => {
             if (!resp.info.mx) return mx.redirect(url);
 
@@ -219,8 +221,8 @@ mx.submit = (form, appentData = {}) => {
     });
 
     let url = form.action;
-    let state = document.getElementById("LAYOUT").dataset.state;
-    let header = { "Layout-State": state };
+    let state = document.body.dataset.state;
+    let header = { "State": state };
     let data = new FormData(form);
 
     appentData.formKey = form.getAttribute("data-form-key");

@@ -48,7 +48,7 @@ return new class extends Front {
             return $content;
         }
 
-        if (Request::header('Layout-State') != self::$LAYOUT_STATE)
+        if (Request::header('State') != self::$STATE)
             $content = self::renderizeLayout($content);
 
         return [
@@ -61,7 +61,7 @@ return new class extends Front {
             ],
             'data' => [
                 'head' => self::$HEAD,
-                'state' => self::$LAYOUT_STATE,
+                'state' => self::$STATE,
                 'content' => $content
             ]
         ];
@@ -77,8 +77,8 @@ return new class extends Front {
         $template = View::render('_front/base', ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
-            'CONTENT' => $content,
-            'LAYOUT_STATE' => self::$LAYOUT_STATE,
+            'STATE' => self::$STATE,
+            'LAYOUT' => "<div id='LAYOUT'>\n$content\n</div>",
             'ALERT' => encapsulate(self::$ALERT),
             'SCRIPT' => url('script.js', ['v' => $version['script']]),
             'STYLE' => url('style.css', ['v' => $version['style']]),
@@ -93,7 +93,7 @@ return new class extends Front {
         $template = View::render("_front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
-            'CONTENT' => $content
+            'CONTENT' => "<div id='CONTENT'>\n$content\n</div>"
         ]);
     }
 

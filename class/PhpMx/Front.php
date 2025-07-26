@@ -7,19 +7,19 @@ abstract class Front
     protected static array $HEAD = [];
     protected static array $ALERT = [];
     protected static ?string $LAYOUT = null;
-    protected static ?string $LAYOUT_STATE = null;
+    protected static ?string $STATE = null;
 
     /** Define o layout que deve ser utilizado */
     static function layout(?string $layout): void
     {
         self::$LAYOUT = $layout;
-        self::layoutState(self::$LAYOUT_STATE);
+        self::state(self::$STATE);
     }
 
     /** Define o estado do layout */
-    static function layoutState(?string $layoutState): void
+    static function state(?string $state): void
     {
-        self::$LAYOUT_STATE = mx5([self::$LAYOUT ?? uuid(), $layoutState]);
+        self::$STATE = mx5([self::$LAYOUT ?? uuid(), $state]);
     }
 
     /** Define um valor para uma subpropriedade da tag [#HEAD] */
