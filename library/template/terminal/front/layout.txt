@@ -1,0 +1,15 @@
+<div id="CONTENT"> <!-- [#CONTENT] --> </div>
+
+<script>
+    // script here
+</script>
+
+<style>
+    #LAYOUT {
+        /* style leyout here */
+    }
+
+    #CONTENT {
+        /* style contet here */
+    }
+</style>
