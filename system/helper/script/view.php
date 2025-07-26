@@ -12,4 +12,4 @@ View::globalPrepare('ICON', fn($iconName, ...$styleClass) => Icon::get($iconName
 
 View::globalPrepare('FORM', fn($name) => prepare("data-form-key='[#]' method='post'", mx5(["form-$name", url('.')])));
 
-View::globalPrepare('VUE', fn($app, $name) => View::render("$app.vue", [], ['name' => $name]));
+View::globalPrepare('VUE', fn($app, $name = null) => View::render("$app.vue", [], ['name' => $name]));
