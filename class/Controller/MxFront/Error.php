@@ -18,12 +18,11 @@ class Error
     {
         $status = $e->getCode();
 
-        if (!is_httpStatusError($status))
+        if (!is_httpStatus($status))
             $status = STS_INTERNAL_SERVER_ERROR;
 
         if (env('DEV'))
             $message = $e->getMessage();
-
 
         $message = $message ?? env("STM_$status") ?? 'Erro desconhecido';
 
