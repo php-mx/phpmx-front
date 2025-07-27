@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.insertAdjacentHTML("beforeend", "<div id='ASIDE'></div>");
     document.body.querySelectorAll("script:not([static])").forEach((tag) => tag.setAttribute("static", ""));
     mx.core.run();
-    mx.alert(currentAlert);
+    for (const alert of currentAlert) mx.alert(alert[0], alert[1]);
 });
 
 const app = {};
@@ -62,12 +62,16 @@ mx.core = {
                         info: {
                             mx: false,
                             error: xhr.status > 399,
-                            staus: xhr.status,
+                            status: xhr.status,
                         },
                         data: resp,
                     };
 
-                if (resp.info.alert ?? false) mx.alert(resp.info.alert);
+                if (Array.isArray(resp.info.alert)) {
+                    for (const a of resp.info.alert) mx.alert(a[0], a[1]);
+                } else if (resp.info.alert) {
+                    mx.alert(resp.info.alert);
+                }
 
                 if (resp.info.location ?? false) {
                     mx.go(resp.info.location);
@@ -126,9 +130,13 @@ mx.update = {
         if (url != window.location) history.pushState({ urlPath: url }, null, url);
     },
     head(head) {
-        document.title = head.title;
-        document.head.querySelector('meta[name="description"]').setAttribute("content", head.description);
-        document.head.querySelector('link[rel="icon"]').setAttribute("href", head.favicon);
+        const desc = document.head.querySelector('meta[name="description"]');
+        const favicon = document.head.querySelector('link[rel="icon"]');
+
+        if (head.title) document.title = head.title;
+        if (desc && head.description) desc.setAttribute("content", head.description);
+        if (favicon && head.favicon) favicon.setAttribute("href", head.favicon);
+
     },
     aside(content, position = null) {
         const element = document.getElementById("ASIDE");
@@ -209,26 +217,29 @@ mx.redirect = (url) => {
     return false;
 };
 
-mx.alert = (listAlert) => {
-    let div = document.getElementById("ALERT");
-    listAlert.forEach((item) => {
-        let title = item[0] ?? "";
-        let content = item[1] ?? "";
-        let type = item[2] ?? "";
-        let svg = {
-            neutral: `[#ICON:alert-neutral]`,
-            success: `[#ICON:alert-success]`,
-            error: `[#ICON:alert-error]`,
-        }[type];
-        let alert = `<div class="${type}">${svg}<span>${title}</span><span>${content}</span></div>`;
-        div.insertAdjacentHTML("beforeend", alert);
-    });
-    div.querySelectorAll("div:not([static])").forEach((e) => {
-        e.setAttribute("static", "");
-        setTimeout(function () {
-            e.remove();
-        }, 5000);
-    });
+mx.alert = (content, type) => {
+    const alert = document.getElementById("ALERT");
+
+    let normalizedType = 'neutral';
+    let svg = `[#ICON:alert-neutral]`;
+
+    if (type === true) {
+        normalizedType = 'success';
+        svg = `[#ICON:alert-success]`;
+    }
+
+    if (type === false) {
+        normalizedType = 'error';
+        svg = `[#ICON:alert-error]`;
+    }
+
+    const div = document.createElement("div");
+    div.className = normalizedType;
+    div.innerHTML = `${svg}<span>${content}</span>`;
+
+    alert.appendChild(div);
+    div.setAttribute("static", "");
+    setTimeout(() => div.remove(), 5000);
 };
 
 mx.copy = (copyText, alertText = null) => {
@@ -246,7 +257,7 @@ mx.copy = (copyText, alertText = null) => {
 
     document.body.removeChild(textarea);
 
-    if (alertText) mx.alert([[alertText, "", "success"]]);
+    if (alertText) mx.alert(alertText, true);
 };
 
 mx.debounce = (func, wait) => {
