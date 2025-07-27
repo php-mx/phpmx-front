@@ -8,6 +8,6 @@ return new class extends Terminal {
     {
         $page = path('page', $page);
 
-        self::run('make.view', $page);
+        Terminal::run('make.view', $page);
     }
 };
