@@ -48,7 +48,7 @@ return new class extends Front {
             return $content;
         }
 
-        if (Request::header('State') != self::$STATE)
+        if (!IS_ASIDE && Request::header('State') != self::$STATE)
             $content = self::renderizeLayout($content);
 
         return [

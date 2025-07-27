@@ -20,6 +20,7 @@ mx.core = {
     run() {
         Object.keys(mx.core.registred).forEach((querySelector) =>
             document.body.querySelectorAll(querySelector).forEach((element) => {
+                if (element.closest('[data-vue]')) return;
                 mx.core.registred[querySelector](element);
                 element.setAttribute("static", "");
             })
@@ -69,7 +70,7 @@ mx.core = {
                 if (resp.info.alert ?? false) mx.alert(resp.info.alert);
 
                 if (resp.info.location ?? false) {
-                    mx.go(resp.info.location, true);
+                    mx.go(resp.info.location);
                     return reject("redirect");
                 }
 
@@ -129,10 +130,33 @@ mx.update = {
         document.head.querySelector('meta[name="description"]').setAttribute("content", head.description);
         document.head.querySelector('link[rel="icon"]').setAttribute("href", head.favicon);
     },
+    aside(content, position = null) {
+        const element = document.getElementById("ASIDE");
+
+        Object.entries(mx.core.instanceVue).forEach(([id, app]) => {
+            const el = document.getElementById(id);
+            if (el && element.contains(el)) {
+                app.unmount();
+                delete mx.core.instanceVue[id];
+            }
+        });
+
+        if (content) {
+            element.innerHTML = '<span class="aside-backcover" data-aside></span>' + content;
+            element.dataset.position = position ?? element.dataset.position;
+            document.body.classList.add('__aside__');
+            mx.core.run();
+        } else {
+            element.innerHTML = '';
+            element.dataset.position = '';
+            document.body.classList.remove('__aside__');
+
+        }
+    }
 };
 
-mx.go = (url, force = false) => {
-    if (!force && url == window.location) return;
+mx.go = (url) => {
+    url = new URL(url, document.baseURI).href
     if (new URL(url).hostname != new URL(window.location).hostname) return mx.redirect(url);
     let state = document.body.dataset.state;
     mx.core
@@ -141,6 +165,8 @@ mx.go = (url, force = false) => {
             if (!resp.info.mx) return mx.redirect(url);
 
             if (resp.info.error) return;
+
+            mx.aside.close();
 
             mx.update.head(resp.data.head);
 
@@ -156,6 +182,26 @@ mx.go = (url, force = false) => {
             return;
         })
         .catch(() => null);
+};
+
+mx.aside = {
+    open(url, position) {
+        if (!["top", "left", "right", "bottom", "center", "full", null].includes(position)) return mx.aside.close();
+        url = new URL(url, document.baseURI).href
+        if (new URL(url).hostname != new URL(window.location).hostname) return mx.redirect(url);
+        mx.core
+            .request(url, "get", {}, { "Request-Aside": true })
+            .then((resp) => {
+                if (!resp.info.mx) return mx.redirect(url);
+                if (resp.info.error) return;
+                mx.update.aside(resp.data.content, position);
+                return;
+            })
+            .catch(() => null);
+    },
+    close() {
+        mx.update.aside(null);
+    }
 };
 
 mx.redirect = (url) => {
@@ -222,7 +268,7 @@ mx.submit = (form, appentData = {}) => {
 
     let url = form.action;
     let state = document.body.dataset.state;
-    let header = { "State": state };
+    let header = { "State": state, 'Request-Submitting': true };
     let data = new FormData(form);
 
     appentData.formKey = form.getAttribute("data-form-key");
@@ -262,12 +308,19 @@ mx.vue = (component, elementId) => {
     mx.core
         .loadScript("/assets/third/vue.js")
         .then(() => {
+            const el = document.getElementById(elementId);
+
+            if (!el) throw new Error(`Element #${elementId} not found`);
+
             if (mx.core.instanceVue[elementId]) {
                 mx.core.instanceVue[elementId].unmount();
                 delete mx.core.instanceVue[elementId];
             }
+
+            el.setAttribute("data-vue", "true");
+
             mx.core.instanceVue[elementId] = Vue.createApp(component());
-            mx.core.instanceVue[elementId].mount(`#${elementId}`);
+            mx.core.instanceVue[elementId].mount(el);
         })
         .catch((e) => console.error("impossible to load [vue.js]", e));
 };
@@ -303,8 +356,19 @@ mx.submitForm = (formId) => {
 mx.core.register("[href]:not([static]):not([href=''])", (element) => {
     element.addEventListener("click", (event) => {
         event.preventDefault();
-        let url = new URL(element.href ?? element.getAttribute("href"), document.baseURI).href;
-        mx.go(url, document.baseURI);
+        const url = element.href ?? element.getAttribute("href");
+        if (element.hasAttribute("data-aside")) {
+            mx.aside.open(url, element.dataset.aside || null);
+        } else {
+            mx.go(url);
+        }
+    });
+});
+
+mx.core.register('[data-aside]:not([static])', (element) => {
+    element.addEventListener("click", (event) => {
+        event.preventDefault();
+        mx.aside.close();
     });
 });
 
