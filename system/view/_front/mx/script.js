@@ -201,7 +201,7 @@ mx.aside = {
             .request(url, "get", {}, { "Request-Aside": true })
             .then((resp) => {
                 if (!resp.info.mx) return mx.redirect(url);
-                if (resp.info.error) return;
+                if (resp.info.error && resp.data == null) return;
                 mx.update.aside(resp.data.content, position);
                 return;
             })
