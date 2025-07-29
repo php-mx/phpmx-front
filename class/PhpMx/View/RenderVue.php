@@ -4,6 +4,7 @@ namespace PhpMx\View;
 
 use PhpMx\View;
 
+/** Classe responsável por renderizar arquivos .vue no sistema de views. */
 abstract class RenderVue extends View
 {
     protected static array $IMPORTED_HASH = [];

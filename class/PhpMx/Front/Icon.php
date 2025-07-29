@@ -7,6 +7,7 @@ use PhpMx\File;
 use PhpMx\Import;
 use PhpMx\Path;
 
+/** Gera SVGs inline a partir de ícones mapeados via referência. */
 abstract class Icon
 {
     protected static array $cache = [];

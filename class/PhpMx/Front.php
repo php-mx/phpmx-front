@@ -2,6 +2,7 @@
 
 namespace PhpMx;
 
+/** Controla layout, estado, metadados e alertas do frontend. */
 abstract class Front
 {
     protected static array $HEAD = [];

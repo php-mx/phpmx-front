@@ -2,6 +2,7 @@
 
 namespace PhpMx;
 
+/** Classe responsável por gerenciar cookies de forma segura e controlada. */
 abstract class Cookie
 {
     /** Lista de cookies controlados */

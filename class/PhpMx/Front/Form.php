@@ -5,6 +5,7 @@ namespace PhpMx\Front;
 use PhpMx\Input;
 use PhpMx\Request;
 
+/** Cria e valida chave de formulários. */
 class Form extends Input
 {
     protected ?string $formKey = null;
