@@ -26,6 +26,7 @@ mx.core = {
             })
         );
         document.body.querySelectorAll("script:not([static])").forEach((tag) => {
+            if (tag.closest('pre')) return;
             eval(tag.innerHTML);
             tag.setAttribute("static", "");
         });
