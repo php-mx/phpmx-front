@@ -388,11 +388,19 @@ mx.submitForm = (formId) => {
 mx.core.register("[href]:not([static]):not([href=''])", (element) => {
     element.addEventListener("click", (event) => {
         event.preventDefault();
-        const url = element.href ?? element.getAttribute("href");
+        const href = element.getAttribute("href");
+
+        if (href.startsWith("#")) {
+            const area = href.slice(1);
+            console.log(area)
+            mx.update.scroll(area);
+            return;
+        }
+
         if (element.hasAttribute("data-aside")) {
-            mx.aside.open(url, element.dataset.aside || null);
+            mx.aside.open(href, element.dataset.aside || null);
         } else {
-            mx.go(url);
+            mx.go(href);
         }
     });
 });
