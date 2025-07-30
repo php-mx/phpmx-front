@@ -10,7 +10,7 @@ class Style
     function __invoke()
     {
         Response::type('css');
-        Response::content(View::render('_front/style'));
+        Response::content(View::render('front.css'));
         Response::send();
     }
 }

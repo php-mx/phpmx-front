@@ -70,11 +70,11 @@ return new class extends Front {
     protected function renderizeBase($content = ''): string
     {
         $version = cache('front-version', fn() => [
-            'script' => md5(View::render("_front/script")),
-            'style' => md5(View::render("_front/style"))
+            'script' => md5(View::render("front.js")),
+            'style' => md5(View::render("front.css"))
         ]);
 
-        $template = View::render('_front/base', ['HEAD' => self::$HEAD]);
+        $template = View::render('front.html', ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
             'STATE' => self::$STATE,
@@ -90,7 +90,7 @@ return new class extends Front {
         if (is_null(self::$LAYOUT))
             return "<div id='CONTENT'>\n$content\n</div>";
 
-        $template = View::render("_front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
+        $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
             'CONTENT' => "<div id='CONTENT'>\n$content\n</div>"

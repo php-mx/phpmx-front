@@ -29,6 +29,6 @@ class Error
         Front::title($message);
         Front::layout(env('FRONT_ERROR_LAYOUT'));
 
-        return View::render('_front/error', ['status' => $status, 'message' => $message]);
+        return View::render('page/error', ['status' => $status, 'message' => $message]);
     }
 }
