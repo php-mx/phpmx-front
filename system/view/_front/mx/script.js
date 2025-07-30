@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.querySelectorAll("script:not([static])").forEach((tag) => tag.setAttribute("static", ""));
     mx.core.run();
     for (const alert of currentAlert) mx.alert(alert[0], alert[1]);
+    mx.update.scroll();
 });
 
 const app = {};
@@ -161,6 +162,25 @@ mx.update = {
             document.body.classList.remove('__aside__');
 
         }
+    },
+    scroll(area = null) {
+        if (!area) {
+            const hash = location.hash;
+            if (hash && hash.length > 1)
+                area = decodeURIComponent(hash.slice(1));
+        }
+
+        if (area) {
+            const anchor = document.querySelector(`[data-area="${area}"]`);
+
+            if (anchor) {
+                const top = anchor.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top, behavior: 'smooth' });
+                return;
+            }
+        }
+
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
 };
 
@@ -187,7 +207,7 @@ mx.go = (url) => {
                 mx.update.layout(resp.data.content, resp.data.state);
             }
 
-            window.scrollTo(0, 0);
+            mx.update.scroll();
             return;
         })
         .catch(() => null);
@@ -298,7 +318,7 @@ mx.submit = (form, appentData = {}) => {
                 mx.update.location(url);
                 if (resp.data.state == state) mx.update.content(resp.data.content);
                 else mx.update.layout(resp.data.content, resp.data.state);
-                window.scrollTo(0, 0);
+                mx.update.scroll();
                 return;
             }
 
