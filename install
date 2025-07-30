@@ -1,12 +1,15 @@
 <?php
-return new class extends mxInstall {
+
+use PhpMx\TerminalInstall;
+
+return new class extends TerminalInstall {
 
     function __invoke()
     {
-        $this->promote('system/view/_front/layout/default.html');
-        $this->promote('system/view/_front/base.html');
-        $this->promote('system/view/_front/error.html');
-        $this->promote('system/view/_front/script.js');
-        $this->promote('system/view/_front/style.css');
+        $this->promote('system/view/front/layout/default.html');
+        $this->promote('system/view/front/base.html');
+        $this->promote('system/view/front/error.html');
+        $this->promote('system/view/front/script.js');
+        $this->promote('system/view/front/style.css');
     }
 };
