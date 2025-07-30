@@ -405,14 +405,17 @@ mx.core.register('[data-aside]:not([static])', (element) => {
 });
 
 mx.core.register("[href]:not([href=''])", (element) => {
-    let url = new URL(element.href ?? element.getAttribute("href"), document.baseURI).href + "/";
-    let href = window.location.href + "/";
+    const elementUrl = new URL(element.getAttribute("href"), document.baseURI);
+    const currentUrl = new URL(window.location.href);
+
+    const url = elementUrl.origin + elementUrl.pathname + elementUrl.search + "/";
+    const href = currentUrl.origin + currentUrl.pathname + currentUrl.search + "/";
 
     element.classList.remove("active-link");
     element.classList.remove("current-link");
 
     if (href.startsWith(url)) element.classList.add("active-link");
-    if (url == href) element.classList.add("current-link");
+    if (href === url) element.classList.add("current-link");
 });
 
 mx.core.register("form[data-form-key]:not([static])", (element) => {
