@@ -42,6 +42,7 @@ return new class extends Front {
 
         if (!IS_PARTIAL) {
             $content = $this->renderizeLayout($content);
+            $content = $this->renderizeContext($content);
             $content = $this->renderizeBase($content);
 
             if (env('DEV')) $content = prepare("[#]\n<!--[#]-->", [$content, Log::getString()]);
@@ -79,11 +80,11 @@ return new class extends Front {
     protected function renderizeBase($content = ''): string
     {
         $version = cache('front-version', fn() => [
-            'script' => md5(View::render("front.js")),
-            'style' => md5(View::render("front.css"))
+            'script' => md5(View::render("front/base.js")),
+            'style' => md5(View::render("front/base.css"))
         ]);
 
-        $template = View::render('front.html', ['HEAD' => self::$HEAD]);
+        $template = View::render('front/base.html', ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
             'CONTEXT' => "<div id='CONTEXT'>\n$content\n</div>",
