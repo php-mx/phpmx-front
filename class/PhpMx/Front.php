@@ -7,32 +7,32 @@ abstract class Front
 {
     protected static array $HEAD = [];
     protected static array $ALERT = [];
-    protected static ?string $CONTEXT = null;
-    protected static ?string $CONTEXT_STATE = null;
+    protected static ?string $DOMAIN = null;
+    protected static ?string $DOMAIN_STATE = null;
     protected static ?string $LAYOUT = null;
     protected static ?string $LAYOUT_STATE = null;
 
-    /** Define o contexto que deve ser utilizado */
-    static function context(?string $context): void
+    /** Define o dominio frontend que deve ser utilizado */
+    static function domain(?string $domain): void
     {
-        self::$CONTEXT = $context;
-        self::contextState(self::$CONTEXT_STATE);
+        self::$DOMAIN = $domain;
+        self::domainState(self::$DOMAIN_STATE);
     }
 
-    /** Define o estado do contexto */
-    static function contextState(?string $contextState): void
+    /** Define o estado do dominio frontend */
+    static function domainState(?string $domainState): void
     {
-        self::$CONTEXT_STATE = mx5([self::$CONTEXT ?? uuid(), $contextState]);
+        self::$DOMAIN_STATE = mx5([self::$DOMAIN ?? uuid(), $domainState]);
     }
 
-    /** Define o layout que deve ser utilizado */
+    /** Define o layout frontend que deve ser utilizado */
     static function layout(?string $layout): void
     {
         self::$LAYOUT = $layout;
         self::layoutState(self::$LAYOUT_STATE);
     }
 
-    /** Define o estado do layout */
+    /** Define o estado do layout frontend */
     static function layoutState(?string $layoutState): void
     {
         self::$LAYOUT_STATE = mx5([self::$LAYOUT ?? uuid(), $layoutState]);
