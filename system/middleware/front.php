@@ -106,9 +106,7 @@ return new class extends Front {
 
         if (!is_null(self::$DOMAIN)) {
             $template = View::render("front/domain/" . self::$DOMAIN, ['HEAD' => self::$HEAD]);
-            $content = prepare($template, [
-                'LAYOUT' => $content
-            ]);
+            if ($template) $content = prepare($template, ['LAYOUT' => $content]);
         }
 
         return $content;
@@ -120,9 +118,7 @@ return new class extends Front {
 
         if (!is_null(self::$LAYOUT)) {
             $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
-            $content = prepare($template, [
-                'CONTENT' => $content
-            ]);
+            if ($template) $content = prepare($template, ['CONTENT' => $content]);
         }
 
         return $content;
