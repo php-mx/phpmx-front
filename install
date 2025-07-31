@@ -6,10 +6,11 @@ return new class extends TerminalInstall {
 
     function __invoke()
     {
-        $this->promote('system/view/front/_content.html');
-        $this->promote('system/view/front/_script.js');
-        $this->promote('system/view/front/_style.css');
-        $this->promote('system/view/front/layout/default/_content.html');
-        $this->promote('system/view/page/error/_content.html');
+        $this->promote('system/view/front/base/base.css');
+        $this->promote('system/view/front/base/base.html');
+        $this->promote('system/view/front/base/base.js');
+        $this->promote('system/view/front/domain/default/default.html');
+        $this->promote('system/view/front/layout/default/default.html');
+        $this->promote('system/view/page/error.html');
     }
 };
