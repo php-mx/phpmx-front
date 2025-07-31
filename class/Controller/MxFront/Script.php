@@ -10,7 +10,7 @@ class Script
     function __invoke()
     {
         Response::type('js');
-        Response::content(View::render('front.js'));
+        Response::content(View::render('front/base.js'));
         Response::send();
     }
 }
