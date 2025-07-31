@@ -11,7 +11,11 @@ return new class extends Terminal {
     {
         $layout = explode('/', $layout);
         $layout = array_map(fn($v) => str_replace(' ', '_', remove_accents(trim($v))), $layout);
-        $layout[] = '_content.html';
+
+        $layoutName = array_pop($layout);
+        $layout[] = $layoutName;
+        $layout[] = "$layoutName.html";
+
         $layout = path('system/view/front/layout', ...$layout);
 
         if (File::check($layout))

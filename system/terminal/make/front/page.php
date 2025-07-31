@@ -11,7 +11,10 @@ return new class extends Terminal {
     {
         $page = explode('/', $page);
         $page = array_map(fn($v) => str_replace(' ', '_', remove_accents(trim($v))), $page);
-        $page[] = '_content.html';
+
+        $pageName = array_pop($page);
+        $page[] = "$pageName.html";
+
         $page = path('system/view/page', ...$page);
 
         if (File::check($page))

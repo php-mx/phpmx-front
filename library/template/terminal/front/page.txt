@@ -1,15 +1,15 @@
 <div id="__scope">
-    <!-- html here -->
+  <!-- html here -->
 </div>
 
 <script>
-    app.__scope = {
-        // script here
-    }
+  app.__scope = {
+    // script here
+  };
 </script>
 
 <style>
-    #__scope {
-        /* style here */
-    }
+  #__scope {
+    /* style here */
+  }
 </style>
