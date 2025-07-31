@@ -17,6 +17,7 @@ return new class extends Front {
             self::title(env('FRONT_TITLE'));
             self::favicon(env('FRONT_FAVICON'));
             self::description(env('FRONT_DESCRIPTION'));
+            self::context(env('FRONT_CONTEXT'));
             self::layout(env('FRONT_LAYOUT'));
 
             $content = $next();
@@ -48,8 +49,13 @@ return new class extends Front {
             return $content;
         }
 
-        if (!IS_ASIDE && Request::header('State') != self::$STATE)
-            $content = self::renderizeLayout($content);
+        if (!IS_ASIDE) {
+            if (Request::header('Layout-State') != self::$LAYOUT_STATE)
+                $content = self::renderizeLayout($content);
+
+            if (Request::header('Context-State') != self::$CONTEXT_STATE)
+                $content = self::renderizeContext($content);
+        }
 
         return [
             'info' => [
@@ -61,7 +67,10 @@ return new class extends Front {
             ],
             'data' => [
                 'head' => self::$HEAD,
-                'state' => self::$STATE,
+                'state' => [
+                    'context' => self::$CONTEXT_STATE,
+                    'layout' => self::$LAYOUT_STATE
+                ],
                 'content' => $content
             ]
         ];
@@ -77,24 +86,45 @@ return new class extends Front {
         $template = View::render('front.html', ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
-            'STATE' => self::$STATE,
-            'LAYOUT' => "<div id='LAYOUT'>\n$content\n</div>",
+            'CONTEXT' => "<div id='CONTEXT'>\n$content\n</div>",
             'ALERT' => encapsulate(self::$ALERT),
-            'SCRIPT' => url('script.js', ['v' => $version['script']]),
-            'STYLE' => url('style.css', ['v' => $version['style']]),
+            'STATE' => [
+                'context' => self::$CONTEXT_STATE,
+                'layout' => self::$LAYOUT_STATE
+            ],
+            'ASSETS' => [
+                'script' => url('script.js', ['v' => $version['script']]),
+                'style' => url('style.css', ['v' => $version['style']])
+            ],
         ]);
+    }
+
+    protected function renderizeContext($content = ''): string
+    {
+        $content = "<div id='LAYOUT'>\n$content\n</div>";
+
+        if (!is_null(self::$CONTEXT)) {
+            $template = View::render("front/context/" . self::$CONTEXT, ['HEAD' => self::$HEAD]);
+            $content = prepare($template, [
+                'LAYOUT' => $content
+            ]);
+        }
+
+        return $content;
     }
 
     protected function renderizeLayout($content = ''): string
     {
-        if (is_null(self::$LAYOUT))
-            return "<div id='CONTENT'>\n$content\n</div>";
+        $content = "<div id='CONTENT'>\n$content\n</div>";
 
-        $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
+        if (!is_null(self::$LAYOUT)) {
+            $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
+            $content = prepare($template, [
+                'CONTENT' => $content
+            ]);
+        }
 
-        return prepare($template, [
-            'CONTENT' => "<div id='CONTENT'>\n$content\n</div>"
-        ]);
+        return $content;
     }
 
     protected function renderizeThrowable(Throwable $e)

@@ -27,6 +27,7 @@ class Error
         $message = $message ?? env("STM_$status") ?? 'Erro desconhecido';
 
         Front::title($message);
+        Front::context(env('FRONT_ERROR_CONTEXT'));
         Front::layout(env('FRONT_ERROR_LAYOUT'));
 
         return View::render('page/error', ['status' => $status, 'message' => $message]);

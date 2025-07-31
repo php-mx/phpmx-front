@@ -96,12 +96,7 @@ mx.core = {
       document.head.appendChild(script);
     });
   },
-};
-
-mx.update = {
-  content(content) {
-    let element = document.getElementById("CONTENT");
-
+  unmountVueIn(element) {
     Object.entries(mx.core.instanceVue).forEach(([id, app]) => {
       const el = document.getElementById(id);
       if (el && element.contains(el)) {
@@ -109,23 +104,30 @@ mx.update = {
         delete mx.core.instanceVue[id];
       }
     });
+  },
+};
 
+mx.update = {
+  context(content, state) {
+    let element = document.getElementById("CONTEXT");
+    mx.core.unmountVueIn(element);
     element.innerHTML = content;
+    document.body.dataset.context = state.context;
+    document.body.dataset.layout = state.layout;
     mx.core.run();
   },
   layout(content, state) {
     let element = document.getElementById("LAYOUT");
-
-    Object.entries(mx.core.instanceVue).forEach(([id, app]) => {
-      const el = document.getElementById(id);
-      if (el && element.contains(el)) {
-        app.unmount();
-        delete mx.core.instanceVue[id];
-      }
-    });
-
+    mx.core.unmountVueIn(element);
     element.innerHTML = content;
-    document.body.dataset.state = state;
+    document.body.dataset.context = state.context;
+    document.body.dataset.layout = state.layout;
+    mx.core.run();
+  },
+  content(content) {
+    let element = document.getElementById("CONTENT");
+    mx.core.unmountVueIn(element);
+    element.innerHTML = content;
     mx.core.run();
   },
   location(url) {
@@ -184,9 +186,10 @@ mx.update = {
 mx.go = (url) => {
   url = new URL(url, document.baseURI).href;
   if (new URL(url).hostname != new URL(window.location).hostname) return mx.redirect(url);
-  let state = document.body.dataset.state;
+  let contextState = document.body.dataset.context;
+  let layoutState = document.body.dataset.layout;
   mx.core
-    .request(url, "get", {}, { State: state })
+    .request(url, "get", {}, { "Context-State": contextState, "Layout-State": layoutState })
     .then((resp) => {
       if (!resp.info.mx) return mx.redirect(url);
 
@@ -198,10 +201,12 @@ mx.go = (url) => {
 
       mx.update.location(url);
 
-      if (resp.data.state == state) {
-        mx.update.content(resp.data.content);
-      } else {
+      if (resp.data.state.context != contextState) {
+        mx.update.context(resp.data.content, resp.data.state);
+      } else if (resp.data.state.layout != layoutState) {
         mx.update.layout(resp.data.content, resp.data.state);
+      } else {
+        mx.update.content(resp.data.content);
       }
 
       mx.update.scroll();
@@ -296,8 +301,9 @@ mx.submit = (form, appentData = {}) => {
   });
 
   let url = form.action;
-  let state = document.body.dataset.state;
-  let header = { State: state, "Request-Submitting": true };
+  let contextState = document.body.dataset.context;
+  let layoutState = document.body.dataset.layout;
+  let header = { "Context-State": contextState, "Layout-State": layoutState, "Request-Submitting": true };
   let data = new FormData(form);
 
   appentData.formKey = form.getAttribute("data-form-key");
@@ -313,8 +319,15 @@ mx.submit = (form, appentData = {}) => {
       if (resp.data) {
         mx.update.head(resp.data.head);
         mx.update.location(url);
-        if (resp.data.state == state) mx.update.content(resp.data.content);
-        else mx.update.layout(resp.data.content, resp.data.state);
+
+        if (resp.data.state.context != contextState) {
+          mx.update.context(resp.data.content, resp.data.state);
+        } else if (resp.data.state.layout != layoutState) {
+          mx.update.layout(resp.data.content, resp.data.state);
+        } else {
+          mx.update.content(resp.data.content);
+        }
+
         mx.update.scroll();
         return;
       }

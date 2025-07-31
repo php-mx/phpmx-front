@@ -7,14 +7,14 @@
     <meta name="description" content="[#HEAD.description]" />
     <link rel="icon" type="image/x-icon" href="[#HEAD.favicon]" />
     <title>[#HEAD.title]</title>
-    <link rel="stylesheet" href="[#STYLE]" />
-    <script src="[#SCRIPT]"></script>
+    <link rel="stylesheet" href="[#ASSETS.style]" />
+    <script src="[#ASSETS.script]"></script>
     <script>
       const currentAlert = JSON.parse("[#ALERT]");
     </script>
   </head>
 
-  <body data-state="[#STATE]">
+  <body data-context="[#STATE.context]" data-layout="[#STATE.layout]">
     <!-- [#CONTEXT] -->
   </body>
 </html>
