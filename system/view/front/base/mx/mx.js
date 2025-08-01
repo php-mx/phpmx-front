@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", mx.throttle(mx.update.scrollLinks, 100));
 
   mx.update.scroll();
-  mx.update.scrollLinks();
 });
 
 const app = {};
@@ -179,11 +178,13 @@ mx.update = {
       if (anchor) {
         const top = anchor.getBoundingClientRect().top + window.scrollY - 100;
         window.scrollTo({ top, behavior: "smooth" });
+        mx.update.scrollLinks();
         return;
       }
     }
 
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    mx.update.scrollLinks();
   },
   scrollLinks() {
     document.querySelectorAll('[href^="#"].area-link').forEach((el) => el.classList.remove("area-link"));
