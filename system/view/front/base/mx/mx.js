@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   window.onpopstate = () => location.reload();
-  document.body.insertAdjacentHTML("beforeend", "<div id='ALERT'></div>");
   document.body.insertAdjacentHTML("beforeend", "<div id='ASIDE'></div>");
+  document.body.insertAdjacentHTML("beforeend", "<div id='ALERT'></div>");
   document.body.querySelectorAll("script:not([static])").forEach((tag) => tag.setAttribute("static", ""));
   mx.core.run();
   for (const alert of currentAlert) mx.alert(alert[0], alert[1]);
+
+  window.addEventListener("scroll", mx.throttle(mx.update.scrollLinks, 250));
+
   mx.update.scroll();
+  mx.update.scrollLinks();
 });
 
 const app = {};
@@ -181,6 +185,17 @@ mx.update = {
 
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   },
+  scrollLinks() {
+    document.querySelectorAll('[href^="#"].area-link').forEach((el) => el.classList.remove("area-link"));
+
+    const visibles = Array.from(document.querySelectorAll("[data-area]")).filter((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight - 100 && rect.bottom > 100;
+    });
+
+    for (const el of visibles)
+      document.querySelectorAll(`[href="#${CSS.escape(el.getAttribute("data-area"))}"]`).forEach((link) => link.classList.add("area-link"));
+  },
 };
 
 mx.go = (url) => {
@@ -288,6 +303,17 @@ mx.debounce = (func, wait) => {
   return () => {
     clearTimeout(timer);
     timer = setTimeout(func, wait);
+  };
+};
+
+mx.throttle = (func, wait) => {
+  let lastCall = 0;
+  return () => {
+    const now = Date.now();
+    if (now - lastCall >= wait) {
+      lastCall = now;
+      func();
+    }
   };
 };
 
@@ -402,8 +428,8 @@ mx.core.register("[href]:not([static]):not([href=''])", (element) => {
 
     if (href.startsWith("#")) {
       const area = href.slice(1);
-      console.log(area);
       mx.update.scroll(area);
+      history.pushState(null, "", `#${area}`);
       return;
     }
 
