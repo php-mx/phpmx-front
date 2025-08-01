@@ -8,34 +8,32 @@ abstract class Front
     protected static array $HEAD = [];
     protected static array $ALERT = [];
     protected static ?string $DOMAIN = null;
-    protected static ?string $DOMAIN_STATE = null;
     protected static ?string $LAYOUT = null;
+    protected static ?string $DOMAIN_STATE = null;
     protected static ?string $LAYOUT_STATE = null;
 
     /** Define o dominio frontend que deve ser utilizado */
     static function domain(?string $domain): void
     {
         self::$DOMAIN = $domain;
-        self::domainState(self::$DOMAIN_STATE);
-    }
-
-    /** Define o estado do dominio frontend */
-    static function domainState(?string $domainState): void
-    {
-        self::$DOMAIN_STATE = mx5([self::$DOMAIN ?? uuid(), $domainState]);
     }
 
     /** Define o layout frontend que deve ser utilizado */
     static function layout(?string $layout): void
     {
         self::$LAYOUT = $layout;
-        self::layoutState(self::$LAYOUT_STATE);
+    }
+
+    /** Define o estado do dominio frontend */
+    static function domainState(?string $domainState): void
+    {
+        self::$DOMAIN_STATE = $domainState;
     }
 
     /** Define o estado do layout frontend */
     static function layoutState(?string $layoutState): void
     {
-        self::$LAYOUT_STATE = mx5([self::$LAYOUT ?? uuid(), $layoutState]);
+        self::$LAYOUT_STATE = $layoutState;
     }
 
     /** Define um valor para uma subpropriedade da tag [#HEAD] */

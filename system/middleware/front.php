@@ -37,15 +37,15 @@ return new class extends Front {
     protected function renderize($content): string|array
     {
         $content = $content ?? '';
+        $domainState = mx5(['domain', self::$DOMAIN, self::$DOMAIN_STATE]);
+        $layoutState = mx5(['layout', self::$LAYOUT, self::$LAYOUT_STATE]);
 
         if (is_array($content)) $content = implode('', $content);
 
         if (!IS_PARTIAL) {
             $content = $this->renderizeLayout($content);
-
             $content = $this->renderizeDomain($content);
-
-            $content = $this->renderizeBase($content);
+            $content = $this->renderizeBase($content, $domainState, $layoutState);
 
             if (env('DEV')) $content = prepare("[#]\n<!--[#]-->", [$content, Log::getString()]);
 
@@ -53,11 +53,10 @@ return new class extends Front {
         }
 
         if (!IS_ASIDE) {
-            $changeDomain = Request::header('Domain-State') != self::$DOMAIN_STATE;
-            $changeLayout = $changeDomain || Request::header('Layout-State') != self::$LAYOUT_STATE;
+            $changeDomain = Request::header('Domain-State') != $domainState;
+            $changeLayout = $changeDomain || Request::header('Layout-State') != $layoutState;
 
             if ($changeLayout) $content = self::renderizeLayout($content);
-
             if ($changeDomain) $content = self::renderizeDomain($content);
         }
 
@@ -72,15 +71,15 @@ return new class extends Front {
             'data' => [
                 'head' => self::$HEAD,
                 'state' => [
-                    'domain' => self::$DOMAIN_STATE,
-                    'layout' => self::$LAYOUT_STATE
+                    'domain' => $domainState,
+                    'layout' => $layoutState
                 ],
                 'content' => $content
             ]
         ];
     }
 
-    protected function renderizeBase($content = ''): string
+    protected function renderizeBase($content, $domainState, $layoutState): string
     {
         $version = cache('front-version', fn() => [
             'script' => md5(View::render("front/base.js")),
@@ -93,8 +92,8 @@ return new class extends Front {
             'DOMAIN' => "<div id='DOMAIN'>\n$content\n</div>",
             'ALERT' => encapsulate(self::$ALERT),
             'STATE' => [
-                'domain' => self::$DOMAIN_STATE,
-                'layout' => self::$LAYOUT_STATE
+                'domain' => $domainState,
+                'layout' => $layoutState
             ],
             'ASSETS' => [
                 'script' => url('script.js', ['v' => $version['script']]),
@@ -107,10 +106,8 @@ return new class extends Front {
     {
         $content = "<div id='LAYOUT'>\n$content\n</div>";
 
-        if (!is_null(self::$DOMAIN)) {
-            $template = View::render("front/domain/" . self::$DOMAIN, ['HEAD' => self::$HEAD]);
-            if ($template) $content = prepare($template, ['LAYOUT' => $content]);
-        }
+        $template = View::render("front/domain/" . self::$DOMAIN, ['HEAD' => self::$HEAD]);
+        if ($template) $content = prepare($template, ['LAYOUT' => $content]);
 
         return $content;
     }
@@ -119,10 +116,8 @@ return new class extends Front {
     {
         $content = "<div id='CONTENT'>\n$content\n</div>";
 
-        if (!is_null(self::$LAYOUT)) {
-            $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
-            if ($template) $content = prepare($template, ['CONTENT' => $content]);
-        }
+        $template = View::render("front/layout/" . self::$LAYOUT, ['HEAD' => self::$HEAD]);
+        if ($template) $content = prepare($template, ['CONTENT' => $content]);
 
         return $content;
     }
