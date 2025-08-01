@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   mx.core.run();
   for (const alert of currentAlert) mx.alert(alert[0], alert[1]);
 
-  window.addEventListener("scroll", mx.throttle(mx.update.scrollLinks, 250));
+  window.addEventListener("scroll", mx.throttle(mx.update.scrollLinks, 100));
 
   mx.update.scroll();
   mx.update.scrollLinks();
@@ -307,13 +307,21 @@ mx.debounce = (func, wait) => {
 };
 
 mx.throttle = (func, wait) => {
-  let lastCall = 0;
+  let throttleTimer = null;
+  let debounceTimer = null;
+
   return () => {
-    const now = Date.now();
-    if (now - lastCall >= wait) {
-      lastCall = now;
+    if (!throttleTimer) {
       func();
+      throttleTimer = setTimeout(() => {
+        throttleTimer = null;
+      }, wait);
     }
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func();
+    }, wait);
   };
 };
 
