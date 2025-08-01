@@ -42,7 +42,9 @@ return new class extends Front {
 
         if (!IS_PARTIAL) {
             $content = $this->renderizeLayout($content);
+
             $content = $this->renderizeDomain($content);
+
             $content = $this->renderizeBase($content);
 
             if (env('DEV')) $content = prepare("[#]\n<!--[#]-->", [$content, Log::getString()]);
@@ -51,11 +53,12 @@ return new class extends Front {
         }
 
         if (!IS_ASIDE) {
-            if (Request::header('Layout-State') != self::$LAYOUT_STATE)
-                $content = self::renderizeLayout($content);
+            $changeDomain = Request::header('Domain-State') != self::$DOMAIN_STATE;
+            $changeLayout = $changeDomain || Request::header('Layout-State') != self::$LAYOUT_STATE;
 
-            if (Request::header('Domain-State') != self::$DOMAIN_STATE)
-                $content = self::renderizeDomain($content);
+            if ($changeLayout) $content = self::renderizeLayout($content);
+
+            if ($changeDomain) $content = self::renderizeDomain($content);
         }
 
         return [
