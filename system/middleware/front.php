@@ -1,6 +1,5 @@
 <?php
 
-use Controller\MxFront\Error;
 use PhpMx\Log;
 use PhpMx\Front;
 use PhpMx\Request;
@@ -152,7 +151,7 @@ return new class extends Front {
         }
 
         if (IS_GET) {
-            $content = Error::handlePageThrowable($e);
+            $content = View::render('front/throw', ['e' => $e]);
             $content = $this->renderize($content);
         }
 
