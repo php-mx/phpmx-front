@@ -9,9 +9,6 @@ return new class extends TerminalInstall {
         $this->promote('system/view/front/base/base.css');
         $this->promote('system/view/front/base/base.html');
         $this->promote('system/view/front/base/base.js');
-        $this->promote('system/view/front/domain/default/default.html');
-        $this->promote('system/view/front/layout/default/default.html');
-        $this->promote('system/view/page/error.html');
 
         $this->createDir('library/icons');
     }
