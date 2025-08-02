@@ -12,10 +12,8 @@ return new class extends Terminal {
         $page = explode('/', $page);
         $page = array_map(fn($v) => str_replace(' ', '_', remove_accents(trim($v))), $page);
 
-        $pageName = array_pop($page);
-        $page[] = "$pageName.html";
-
         $page = path('system/view/page', ...$page);
+        $page = "$page.html";
 
         if (File::check($page))
             return self::echo("[ignored] file [$page] already exists");

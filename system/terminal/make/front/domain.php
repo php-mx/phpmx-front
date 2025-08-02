@@ -12,11 +12,8 @@ return new class extends Terminal {
         $domain = explode('/', $domain);
         $domain = array_map(fn($v) => str_replace(' ', '_', remove_accents(trim($v))), $domain);
 
-        $domainName = array_pop($domain);
-        $domain[] = $domainName;
-        $domain[] = "$domainName.html";
-
         $domain = path('system/view/front/domain', ...$domain);
+        $domain = "$domain.html";
 
         if (File::check($domain))
             return self::echo("[ignored] file [$domain] already exists");

@@ -12,11 +12,8 @@ return new class extends Terminal {
         $layout = explode('/', $layout);
         $layout = array_map(fn($v) => str_replace(' ', '_', remove_accents(trim($v))), $layout);
 
-        $layoutName = array_pop($layout);
-        $layout[] = $layoutName;
-        $layout[] = "$layoutName.html";
-
         $layout = path('system/view/front/layout', ...$layout);
+        $layout = "$layout.html";
 
         if (File::check($layout))
             return self::echo("[ignored] file [$layout] already exists");
