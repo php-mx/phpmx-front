@@ -7,15 +7,15 @@ abstract class Front
 {
     protected static array $HEAD = [];
     protected static array $ALERT = [];
-    protected static ?string $DOMAIN = null;
+    protected static ?string $CONTEXT = null;
     protected static ?string $LAYOUT = null;
-    protected static ?string $DOMAIN_STATE = null;
+    protected static ?string $CONTEXT_STATE = null;
     protected static ?string $LAYOUT_STATE = null;
 
-    /** Define o dominio frontend que deve ser utilizado */
-    static function domain(?string $domain): void
+    /** Define o contexto frontend que deve ser utilizado */
+    static function context(?string $context): void
     {
-        self::$DOMAIN = $domain;
+        self::$CONTEXT = $context;
     }
 
     /** Define o layout frontend que deve ser utilizado */
@@ -24,10 +24,10 @@ abstract class Front
         self::$LAYOUT = $layout;
     }
 
-    /** Define o estado do dominio frontend */
-    static function domainState(?string $domainState): void
+    /** Define o estado do contexto frontend */
+    static function contextState(?string $contextState): void
     {
-        self::$DOMAIN_STATE = $domainState;
+        self::$CONTEXT_STATE = $contextState;
     }
 
     /** Define o estado do layout frontend */

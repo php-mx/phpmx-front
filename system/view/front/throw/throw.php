@@ -14,7 +14,7 @@ if (env('DEV'))
 $message = $message ?? env("STM_$status") ?? 'Erro desconhecido';
 
 Front::title($message);
-Front::domain(env('FRONT_ERROR_DOMAIN'));
+Front::context(env('FRONT_ERROR_CONTEXT'));
 Front::layout(env('FRONT_ERROR_LAYOUT'));
 
 $content = View::render("./$status", ['status' => $status, 'message' => $message]);

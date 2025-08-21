@@ -1,0 +1,13 @@
+<!-- [#LAYOUT] -->
+
+<script>
+  app.context = {
+    // context script here
+  };
+</script>
+
+<style>
+  #CONTEXT {
+    /* context style here */
+  }
+</style>

@@ -111,11 +111,11 @@ mx.core = {
 };
 
 mx.update = {
-  domain(content, state) {
-    let element = document.getElementById("DOMAIN");
+  context(content, state) {
+    let element = document.getElementById("CONTEXT");
     mx.core.unmountVueIn(element);
     element.innerHTML = content;
-    document.body.dataset.domain = state.domain;
+    document.body.dataset.context = state.context;
     document.body.dataset.layout = state.layout;
     mx.core.run();
   },
@@ -123,7 +123,7 @@ mx.update = {
     let element = document.getElementById("LAYOUT");
     mx.core.unmountVueIn(element);
     element.innerHTML = content;
-    document.body.dataset.domain = state.domain;
+    document.body.dataset.context = state.context;
     document.body.dataset.layout = state.layout;
     mx.core.run();
   },
@@ -202,10 +202,10 @@ mx.update = {
 mx.go = (url) => {
   url = new URL(url, document.baseURI).href;
   if (new URL(url).hostname != new URL(window.location).hostname) return mx.redirect(url);
-  let domainState = document.body.dataset.domain;
+  let contextState = document.body.dataset.context;
   let layoutState = document.body.dataset.layout;
   mx.core
-    .request(url, "get", {}, { "Domain-State": domainState, "Layout-State": layoutState })
+    .request(url, "get", {}, { "Context-State": contextState, "Layout-State": layoutState })
     .then((resp) => {
       if (!resp.info.mx) return mx.redirect(url);
 
@@ -217,8 +217,8 @@ mx.go = (url) => {
 
       mx.update.location(url);
 
-      if (resp.data.state.domain != domainState) {
-        mx.update.domain(resp.data.content, resp.data.state);
+      if (resp.data.state.context != contextState) {
+        mx.update.context(resp.data.content, resp.data.state);
       } else if (resp.data.state.layout != layoutState) {
         mx.update.layout(resp.data.content, resp.data.state);
       } else {
@@ -336,9 +336,9 @@ mx.submit = (form, appentData = {}) => {
   });
 
   let url = form.action;
-  let domainState = document.body.dataset.domain;
+  let contextState = document.body.dataset.context;
   let layoutState = document.body.dataset.layout;
-  let header = { "Domain-State": domainState, "Layout-State": layoutState, "Request-Submitting": true };
+  let header = { "Context-State": contextState, "Layout-State": layoutState, "Request-Submitting": true };
   let data = new FormData(form);
 
   appentData.formKey = form.getAttribute("data-form-key");
@@ -355,8 +355,8 @@ mx.submit = (form, appentData = {}) => {
         mx.update.head(resp.data.head);
         mx.update.location(url);
 
-        if (resp.data.state.domain != domainState) {
-          mx.update.domain(resp.data.content, resp.data.state);
+        if (resp.data.state.context != contextState) {
+          mx.update.context(resp.data.content, resp.data.state);
         } else if (resp.data.state.layout != layoutState) {
           mx.update.layout(resp.data.content, resp.data.state);
         } else {

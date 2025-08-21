@@ -16,7 +16,7 @@ return new class extends Front {
             self::title(env('FRONT_TITLE'));
             self::favicon(env('FRONT_FAVICON'));
             self::description(env('FRONT_DESCRIPTION'));
-            self::domain(env('FRONT_DOMAIN'));
+            self::context(env('FRONT_CONTEXT'));
             self::layout(env('FRONT_LAYOUT'));
 
             $content = $next();
@@ -36,15 +36,15 @@ return new class extends Front {
     protected function renderize($content): string|array
     {
         $content = $content ?? '';
-        $domainState = mx5(['domain', self::$DOMAIN, self::$DOMAIN_STATE]);
+        $contextState = mx5(['context', self::$CONTEXT, self::$CONTEXT_STATE]);
         $layoutState = mx5(['layout', self::$LAYOUT, self::$LAYOUT_STATE]);
 
         if (is_array($content)) $content = implode('', $content);
 
         if (!IS_PARTIAL) {
             $content = $this->renderizeLayout($content);
-            $content = $this->renderizeDomain($content);
-            $content = $this->renderizeBase($content, $domainState, $layoutState);
+            $content = $this->renderizeContext($content);
+            $content = $this->renderizeBase($content, $contextState, $layoutState);
 
             if (env('DEV')) $content = prepare("[#]\n<!--[#]-->", [$content, Log::getString()]);
 
@@ -52,11 +52,11 @@ return new class extends Front {
         }
 
         if (!IS_ASIDE) {
-            $changeDomain = Request::header('Domain-State') != $domainState;
-            $changeLayout = $changeDomain || Request::header('Layout-State') != $layoutState;
+            $changeContext = Request::header('Context-State') != $contextState;
+            $changeLayout = $changeContext || Request::header('Layout-State') != $layoutState;
 
             if ($changeLayout) $content = self::renderizeLayout($content);
-            if ($changeDomain) $content = self::renderizeDomain($content);
+            if ($changeContext) $content = self::renderizeContext($content);
         }
 
         return [
@@ -70,7 +70,7 @@ return new class extends Front {
             'data' => [
                 'head' => self::$HEAD,
                 'state' => [
-                    'domain' => $domainState,
+                    'context' => $contextState,
                     'layout' => $layoutState
                 ],
                 'content' => $content
@@ -78,7 +78,7 @@ return new class extends Front {
         ];
     }
 
-    protected function renderizeBase($content, $domainState, $layoutState): string
+    protected function renderizeBase($content, $contextState, $layoutState): string
     {
         $version = cache('front-version', fn() => [
             'script' => md5(View::render("front/base.js")),
@@ -88,10 +88,10 @@ return new class extends Front {
         $template = View::render('front/base.html', ['HEAD' => self::$HEAD]);
 
         return prepare($template, [
-            'DOMAIN' => "<div id='DOMAIN'>\n$content\n</div>",
+            'CONTEXT' => "<div id='CONTEXT'>\n$content\n</div>",
             'ALERT' => encapsulate(self::$ALERT),
             'STATE' => [
-                'domain' => $domainState,
+                'context' => $contextState,
                 'layout' => $layoutState
             ],
             'ASSETS' => [
@@ -101,11 +101,11 @@ return new class extends Front {
         ]);
     }
 
-    protected function renderizeDomain($content = ''): string
+    protected function renderizeContext($content = ''): string
     {
         $content = "<div id='LAYOUT'>\n$content\n</div>";
 
-        $template = View::render("front/domain/" . self::$DOMAIN, ['HEAD' => self::$HEAD]);
+        $template = View::render("front/context/" . self::$CONTEXT, ['HEAD' => self::$HEAD]);
         if ($template) $content = prepare($template, ['LAYOUT' => $content]);
 
         return $content;
