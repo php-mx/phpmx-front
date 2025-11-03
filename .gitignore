@@ -1,12 +1,15 @@
-/mx
-/.conf
-/composer.lock
-/index.php
-/.htaccess
-
 # MX CORE
 
 /.env
 /vendor
 /library/cache
 /library/certificate
+/class/Model/Db*/Driver
+/library/sqlite
+/system/datalayer/*/scheme
+
+/mx
+/.conf
+/composer.lock
+/index.php
+/.htaccess

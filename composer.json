@@ -1,6 +1,6 @@
 {
     "name": "phpmx/front",
-    "description": "Motor de aplicações monolíticas com PHPMX",
+    "description": "Complemento para frontend monolitico com PHPMX",
     "license": "MIT",
     "authors": [
         {
@@ -22,8 +22,6 @@
         ]
     },
     "require": {
-        "phpmx/core": "dev-main",
-        "phpmx/server": "dev-main",
-        "phpmx/view": "dev-main"
+        "phpmx/core": "dev-main"
     }
 }

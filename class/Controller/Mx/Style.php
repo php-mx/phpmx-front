@@ -1,6 +1,6 @@
 <?php
 
-namespace Controller\MxFront;
+namespace Controller\Mx;
 
 use PhpMx\Response;
 use PhpMx\View;
