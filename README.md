@@ -12,6 +12,9 @@ composer require phpmx/front
 ## Dependências
 
 - [phpmx/core](https://packagist.org/packages/phpmx/core)
+- [phpmx/server](https://packagist.org/packages/phpmx/server)
+- [phpmx/view](https://packagist.org/packages/phpmx/view)
+- [phpmx/cookie](https://packagist.org/packages/phpmx/cookie)
 
 ## Documentação
 
