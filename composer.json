@@ -2,7 +2,6 @@
     "name": "phpmx/front",
     "description": "Complemento para frontend monolitico com PHPMX",
     "license": "MIT",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "André Ricardo",
@@ -22,9 +21,9 @@
         ]
     },
     "require": {
-        "phpmx/core": "dev-main",
-        "phpmx/server": "dev-main",
-        "phpmx/view": "dev-main",
-        "phpmx/cookie": "dev-main"
+        "phpmx/core": "^2.0",
+        "phpmx/server": "^2.0",
+        "phpmx/view": "^2.0",
+        "phpmx/cookie": "^2.0"
     }
 }
